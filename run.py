@@ -1,12 +1,20 @@
 import sys
 from PyQt5.QtWidgets import *
+from main_window import mainObj
+
+class final(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.f = mainObj()
+        self.hl = self.f.layout()
+
+        self.resize(500, 500)
+
+        self.setCentralWidget(self.hl)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    vc = QLabel("hello world")
-    hl = QHBoxLayout()
-    hl.addWidget(vc)
-    w = QWidget()
-    w.setLayout(hl)
-    w.resize(300,300)
-    w.show()
+    
+    mw = final()
+    mw.show()
     sys.exit(app.exec_())
