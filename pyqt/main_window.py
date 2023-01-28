@@ -20,12 +20,16 @@ class mainObj(QWidget):
         self.tab2_layout = QVBoxLayout()
         self.camera = App()
         self.tab2_layout.addWidget(self.camera)
+        self.run_button = QPushButton("Take Picture")
+        self.run_button.clicked.connect(self.camera.thread.take_image)
+        self.tab2_layout.addWidget(self.run_button)
 
         self.tab2 = QWidget()
         self.tab2.setLayout(self.tab2_layout)
 
-        self.tab_layout.addTab(self.tab1, "Text")
+        
         self.tab_layout.addTab(self.tab2, "Camera")
+        self.tab_layout.addTab(self.tab1, "Text")
         
         self.final_qv_tab_layout = QVBoxLayout()
         self.final_qv_tab_layout.addWidget(self.tab_layout)

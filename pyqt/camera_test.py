@@ -16,19 +16,25 @@ class VideoThread(QThread):
 
     def run(self):
         # capture from web cam
+        self.image_perm = False
         cap = cv2.VideoCapture(0)
         while self._run_flag:
             ret, cv_img = cap.read()
+            #ret is boolean, cv_img is an image object
             if ret:
                 self.change_pixmap_signal.emit(cv_img)
+                #cv2.imwrite("test_image.png", cv_img)
+                if self.image_perm:
+                    self.image_perm = False
+                    cv2.imwrite("test_image.png", cv_img)
+                    print("picture tkaen")
+                
         # shut down capture system
         cap.release()
 
-    def change_state(self):
-        if self._run_flag:
-            self._run_flag = False
-        else:
-            self._run_flag = True
+    def take_image(self):
+        self.image_perm = True
+            
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""
@@ -50,15 +56,12 @@ class App(QWidget):
         # connect its signal to the update_image slot
         self.thread.change_pixmap_signal.connect(self.update_image)
 
-        self.run_button = QPushButton()
-        self.run_button.clicked.connect(self.thread.change_state)
 
         # create a vertical box layout and add the two labels
         
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.image_label)
-        vbox.addWidget(self.run_button)
         # set the vbox layout as the widgets layout
         self.setLayout(vbox)
 
