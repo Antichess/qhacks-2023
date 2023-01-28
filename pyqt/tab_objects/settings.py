@@ -1,15 +1,16 @@
 import sys
+import os
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, QtWidgets
 from tab_objects.camera_test import App
 
 class settings(QWidget):
     def __init__(self):
-        #super().__init__()
+        super().__init__()
         
         self.labels = [
-            ["Save logs","checkbox"],
-            ["Test","qlineedit"]
+            ["Save logs","checkbox","save-logs"],
+            ["Test","qlineedit","test-setting"]
         ]
 
         self.control_objects = [] # this saves pointers to checkboxes, qlineedits, etc
@@ -40,14 +41,29 @@ class settings(QWidget):
         [self.vertical_stack.addWidget(x) for x in self.horizontal_widgets]
         self.vertical_widget = QWidget()
         self.vertical_widget.setLayout(self.vertical_stack)
+
+        self.read_settings()
+        if self.settings_numerated[0] == 1:
+            self.control_objects[0].setChecked(True)
         
         return self.vertical_widget
 
     def save_logs(self,b):
         if b.isChecked():
-            print("checked")
+            self.settings_numerated[0] = 1
         else:
-            print("unchecked")
+            self.settings_numerated[0] = 0
+        self.write_settings()
+        
 
-    def test(self):
-        pass
+    def read_settings(self):
+        with open(os.path.join(os.getcwd(), "tab_objects", "settings.txt"),"r") as f:
+            self.all_lines = f.readlines()
+            self.settings_numerated = []
+            for x in self.all_lines:
+                self.settings_numerated.append(int(x.replace("\n","").split(" ")[1]))
+
+    def write_settings(self):
+        with open(os.path.join(os.getcwd(), "tab_objects", "settings.txt"),"w") as w:
+            for c,x in enumerate(self.settings_numerated):
+                w.write(f"{self.labels[c][2]}: {x}\n")
