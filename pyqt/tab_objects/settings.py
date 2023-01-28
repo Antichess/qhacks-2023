@@ -5,23 +5,28 @@ from tab_objects.camera_test import App
 
 class settings(QWidget):
     def __init__(self):
+        #super().__init__()
         
         self.labels = [
             ["Save logs","checkbox"],
             ["Test","qlineedit"]
         ]
 
+        self.control_objects = [] # this saves pointers to checkboxes, qlineedits, etc
+        self.label_objects = [] # this saves pointers to labels
+
         pass
     
     def layout(self):
-        self.control_objects = [] # this saves pointers to checkboxes, qlineedits, etc
-        self.label_objects = [] # this saves pointers to labels
+        
         for x in self.labels:
             self.control_objects.append(QCheckBox()) if x[1] == "checkbox" else False
             self.control_objects.append(QLineEdit()) if x[1] == "qlineedit" else False
                 
             self.label_objects.append(QLabel(x[0]))
         
+        self.control_objects[0].stateChanged.connect(lambda:self.save_logs(self.control_objects[0]))
+
         self.horizontal_rows = [QHBoxLayout() for x in range(len(self.control_objects))] # QHbox layouts
         for c,x in enumerate(self.horizontal_rows):
             x.addWidget(self.label_objects[c],1)
@@ -38,8 +43,11 @@ class settings(QWidget):
         
         return self.vertical_widget
 
-    def save_logs(self):
-        pass
+    def save_logs(self,b):
+        if b.isChecked():
+            print("checked")
+        else:
+            print("unchecked")
 
     def test(self):
         pass

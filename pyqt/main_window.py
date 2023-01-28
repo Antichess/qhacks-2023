@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, QtWidgets
 from tab_objects.camera_test import App
@@ -40,5 +41,19 @@ class mainObj(QWidget):
 
         self.w = QWidget()
         self.w.setLayout(self.final_qv_tab_layout)
+
+        self.read_settings()
         
         return self.w
+
+    def read_settings(self):
+        with open(os.path.join(os.getcwd(), "tab_objects", "settings.txt")) as f:
+            a = f.readlines()
+            l = []
+            for x in a:
+                l.append(x.replace("\n","").split(" ")[1])
+            print(l)
+
+
+        
+        pass
