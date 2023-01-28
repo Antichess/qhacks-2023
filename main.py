@@ -1,12 +1,7 @@
-# Image recognition app using tensorflow and keras to determine if a webcam video is one of 10 categories
-
 # Import libraries
 import tensorflow as tf
 from tensorflow import keras
-# For image manipulation
-import PIL
 import pathlib
-# For linear algebra
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -18,8 +13,6 @@ num_classes = 10
 
 # Image paths
 data_dir = pathlib.Path('imgs')
-image_count = len(list(data_dir.glob('*/*.jpg')))
-print(image_count)
 print(data_dir)
 test_dir = pathlib.Path('imgs/testing')
 train_dir = pathlib.Path('imgs/train')
@@ -29,7 +22,7 @@ batch_size = 32
 img_height, img_width = 480, 640
 
 # Number of epochs to train the model
-epochs = 15
+epochs = 10
 
 # Load the data
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
@@ -66,7 +59,7 @@ for image_batch, labels_batch in train_ds:
 # Configure the dataset for performance
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
-train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)
+train_ds = train_ds.cache().prefetch(buffer_size=AUTOTUNE)
 val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
 test_ds = test_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
@@ -104,15 +97,14 @@ model.compile(optimizer='adam',
 model.summary()
 
 # Train the model
-history = model.fit_generator(
+history = model.fit(
     train_ds,
     validation_data=val_ds,
-    epochs=epochs,
-    verbose=2
+    epochs=epochs
 )
 
 # Evaluate the model
-test_loss, test_acc = model.evaluate(test_ds, verbose=2)
+test_loss, test_acc = model.evaluate(test_ds)
 print('Test accuracy:', test_acc)
 
 # Save the model
