@@ -8,7 +8,7 @@ class settings(QWidget):
         
         self.labels = [
             ["Save logs","checkbox"],
-            ["Test","checkbox"]
+            ["Test","qlineedit"]
         ]
 
         pass
@@ -17,8 +17,9 @@ class settings(QWidget):
         self.control_objects = [] # this saves pointers to checkboxes, qlineedits, etc
         self.label_objects = [] # this saves pointers to labels
         for x in self.labels:
-            if x[1] == "checkbox":
-                self.control_objects.append(QCheckBox())
+            self.control_objects.append(QCheckBox()) if x[1] == "checkbox" else False
+            self.control_objects.append(QLineEdit()) if x[1] == "qlineedit" else False
+                
             self.label_objects.append(QLabel(x[0]))
         
         self.horizontal_rows = [QHBoxLayout() for x in range(len(self.control_objects))] # QHbox layouts
@@ -34,7 +35,11 @@ class settings(QWidget):
         [self.vertical_stack.addWidget(x) for x in self.horizontal_widgets]
         self.vertical_widget = QWidget()
         self.vertical_widget.setLayout(self.vertical_stack)
-
-
         
         return self.vertical_widget
+
+    def save_logs(self):
+        pass
+
+    def test(self):
+        pass

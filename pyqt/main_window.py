@@ -1,7 +1,9 @@
 import sys
 from PyQt5.QtWidgets import *
+from PyQt5 import QtCore, QtWidgets
 from tab_objects.camera_test import App
 from tab_objects.settings import settings
+from tab_objects.main_menu import menu
 
 class mainObj(QWidget):
     def __init__(self):
@@ -11,11 +13,8 @@ class mainObj(QWidget):
         self.tab_layout = QTabWidget()
 
         #TAB 1
-        self.main_menu_layout = QVBoxLayout()
-        self.main_menu_layout.addWidget(QLabel("Hello World!"))
-
-        self.main_menu = QWidget()
-        self.main_menu.setLayout(self.main_menu_layout)
+        self.m = menu()
+        self.main_menu = self.m.layout()
 
         #TAB 2
         self.camera_tab_layout = QVBoxLayout()

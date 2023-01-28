@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import *
+from PyQt5 import QtCore, QtWidgets
 from main_window import mainObj
 
 class final(QMainWindow):
