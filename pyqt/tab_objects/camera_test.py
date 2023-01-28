@@ -27,7 +27,7 @@ class VideoThread(QThread):
                 if self.image_perm:
                     self.image_perm = False
                     cv2.imwrite("test_image.png", cv_img)
-                    print("picture tkaen")
+                    print("picture taken")
                 
         # shut down capture system
         cap.release()

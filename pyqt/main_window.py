@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import *
-from camera_test import App
+from tab_objects.camera_test import App
+from tab_objects.settings import settings
 
 class mainObj(QWidget):
     def __init__(self):
@@ -10,26 +11,30 @@ class mainObj(QWidget):
         self.tab_layout = QTabWidget()
 
         #TAB 1
-        self.tab1_layout = QVBoxLayout()
-        self.tab1_layout.addWidget(QLabel("Hello World!"))
+        self.main_menu_layout = QVBoxLayout()
+        self.main_menu_layout.addWidget(QLabel("Hello World!"))
 
-        self.tab1 = QWidget()
-        self.tab1.setLayout(self.tab1_layout)
+        self.main_menu = QWidget()
+        self.main_menu.setLayout(self.main_menu_layout)
 
         #TAB 2
-        self.tab2_layout = QVBoxLayout()
+        self.camera_tab_layout = QVBoxLayout()
         self.camera = App()
-        self.tab2_layout.addWidget(self.camera)
+        self.camera_tab_layout.addWidget(self.camera)
         self.run_button = QPushButton("Take Picture")
         self.run_button.clicked.connect(self.camera.thread.take_image)
-        self.tab2_layout.addWidget(self.run_button)
+        self.camera_tab_layout.addWidget(self.run_button)
 
-        self.tab2 = QWidget()
-        self.tab2.setLayout(self.tab2_layout)
+        self.camera_tab = QWidget()
+        self.camera_tab.setLayout(self.camera_tab_layout)
 
+        #TAB 3
+        self.settings = settings()
+        self.settings_layout = self.settings.layout()
         
-        self.tab_layout.addTab(self.tab2, "Camera")
-        self.tab_layout.addTab(self.tab1, "Text")
+        self.tab_layout.addTab(self.camera_tab, "Camera")
+        self.tab_layout.addTab(self.main_menu, "Main Menu")
+        self.tab_layout.addTab(self.settings_layout, "Settings")
         
         self.final_qv_tab_layout = QVBoxLayout()
         self.final_qv_tab_layout.addWidget(self.tab_layout)
