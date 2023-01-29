@@ -6,8 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Class names for the 10 different categories identifying whether a driver is impaired or not
-class_names = ['Safe_driver', 'Texting_right', 'Calling_right', 'Texting_left', 'Calling_left',
-               'Infotainment', 'Drinking', 'Reaching', 'Scratching', 'Head_turned']
+class_names = ['Calling_left', 'Calling_right', 'Drinking', 'Head_turned', 'Infotainment',
+               'Reaching', 'Safe_driver', 'Scratching', 'Texting_left', 'Texting_right']
 
 num_classes = 10
 
@@ -17,12 +17,12 @@ print(data_dir)
 test_dir = pathlib.Path('imgs/testing')
 train_dir = pathlib.Path('imgs/train')
 
-batch_size = 32
+batch_size = 4
 # Image size used throughout the process
 img_height, img_width = 480, 640
 
 # Number of epochs to train the model
-epochs = 10
+epochs = 8
 
 # Load the data
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
@@ -138,10 +138,11 @@ model = tf.keras.models.load_model('model.h5')
 
 # Load the image
 img = keras.preprocessing.image.load_img(
-    "imgs/testing/Scratching/Scratching_00001.jpg", target_size=(img_height, img_width)
+    "imgs/testing/test/img_11.jpg", target_size=(img_height, img_width)
 )
+
 img_array = keras.preprocessing.image.img_to_array(img)
-img_array = tf.expand_dims(img_array, 0)  # Create a batch
+img_array = tf.expand_dims(img_array, 0)
 
 # Predict the image
 predictions = model.predict(img_array)
