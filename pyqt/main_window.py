@@ -1,10 +1,11 @@
 import sys
 import os
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 from camera_test import App
 from tab_objects.settings import settings
 from tab_objects.main_menu import menu
+
 
 class mainObj(QWidget):
     send_parent_data = QtCore.pyqtSignal(str)
@@ -46,7 +47,12 @@ class mainObj(QWidget):
         #self.tab_layout.addTab(self.main_menu, "Main Menu")
         self.tab_layout.addTab(self.settings_layout, "Settings")
         
+        self.guarddrive_label = QLabel("GuardDrive")
+        self.guarddrive_label.setFont(QtGui.QFont("Arial", 20))
+        self.guarddrive_label.setAlignment(QtCore.Qt.AlignCenter)
+
         self.final_qv_tab_layout = QVBoxLayout()
+        self.final_qv_tab_layout.addWidget(self.guarddrive_label)
         self.final_qv_tab_layout.addWidget(self.tab_layout)
 
         self.w = QWidget()
