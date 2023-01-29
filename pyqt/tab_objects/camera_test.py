@@ -1,11 +1,14 @@
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
+import time
 import sys
 import cv2
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread
 import numpy as np
-
+from tab_objects.input_into_model import model_output
+from PIL import Image
+import io
 
 class VideoThread(QThread):
     change_pixmap_signal = pyqtSignal(np.ndarray)
@@ -13,6 +16,8 @@ class VideoThread(QThread):
     def __init__(self):
         super().__init__()
         self._run_flag = True
+        self.count = 0
+        self.grab_model = model_output()
 
     def run(self):
         # capture from web cam
@@ -20,6 +25,20 @@ class VideoThread(QThread):
         cap = cv2.VideoCapture(0)
         while self._run_flag:
             ret, cv_img = cap.read()
+            pil_img = Image.fromarray(np.uint8(cv_img*255))
+
+            # Create a BytesIO object
+            img_io = io.BytesIO()
+
+            # Save the PIL image to the BytesIO object
+            pil_img.save(img_io, 'JPEG')
+            img_io.seek(0)
+            #print(f"{type(cv_img)}->{type(img_io)}")
+            result = self.grab_model.check_image(img_io)
+            time.sleep(250/1000)
+            self.count = self.count + 1
+            print("{} {} {:.2f}".format(self.count,result[0],result[1]))
+
             #ret is boolean, cv_img is an image object
             if ret:
                 self.change_pixmap_signal.emit(cv_img)
