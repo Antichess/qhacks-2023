@@ -1,2 +1,2 @@
-save-logs: 0
+save-logs: 1
 test-setting: 2

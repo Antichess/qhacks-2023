@@ -2,7 +2,6 @@ import sys
 import os
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, QtWidgets
-from tab_objects.camera_test import App
 
 class settings(QWidget):
     def __init__(self):

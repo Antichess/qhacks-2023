@@ -9,6 +9,8 @@ import numpy as np
 from tab_objects.input_into_model import model_output
 from PIL import Image
 import io
+import datetime
+import time
 
 class VideoThread(QThread):
     change_pixmap_signal = pyqtSignal(np.ndarray)
@@ -18,47 +20,81 @@ class VideoThread(QThread):
         self._run_flag = True
         self.count = 0
         self.grab_model = model_output()
+        self.result = [0,0]
+        self.trip_start = True
+        self.trip_not_started_image = Image.open('trip_start.jpg')
+        self.numpydata = np.asarray(self.trip_not_started_image)
+        self.last_result = ""
+        self.streak = 0
 
     def run(self):
         # capture from web cam
-        self.image_perm = False
-        cap = cv2.VideoCapture(0)
-        while self._run_flag:
-            ret, cv_img = cap.read()
-            pil_img = Image.fromarray(np.uint8(cv_img*255))
+        with open("log.txt","w") as w:
+            self.image_perm = False
+            cap = cv2.VideoCapture(0)
+            while self._run_flag:
+                ret, cv_img = cap.read()
+                pil_img = Image.fromarray(np.uint8(cv_img*255))
 
-            # Create a BytesIO object
-            img_io = io.BytesIO()
+                # Create a BytesIO object
+                img_io = io.BytesIO()
 
-            # Save the PIL image to the BytesIO object
-            pil_img.save(img_io, 'JPEG')
-            img_io.seek(0)
-            #print(f"{type(cv_img)}->{type(img_io)}")
-            result = self.grab_model.check_image(img_io)
-            time.sleep(250/1000)
-            self.count = self.count + 1
-            print("{} {} {:.2f}".format(self.count,result[0],result[1]))
-
-            #ret is boolean, cv_img is an image object
-            if ret:
-                self.change_pixmap_signal.emit(cv_img)
-                #cv2.imwrite("test_image.png", cv_img)
-                if self.image_perm:
-                    self.image_perm = False
-                    cv2.imwrite("test_image.png", cv_img)
-                    print("picture taken")
+                # Save the PIL image to the BytesIO object
+                pil_img.save(img_io, 'JPEG')
+                img_io.seek(0)
+                #print(f"{type(cv_img)}->{type(img_io)}")
+                self.result = self.grab_model.check_image(img_io)
+                time.sleep(250/1000)
+                self.count = self.count + 1
+                if self.last_result == self.result[0]:
+                    self.streak = self.streak + 1
+                else:
+                    self.streak = 1
+                self.last_result = self.result[0]
                 
-        # shut down capture system
-        cap.release()
+                print("{} {} {:.2f} Streak: {}".format(self.count,self.result[0],self.result[1],self.streak))
+                w.write("{} {} {:.2f} Streak: {}\n".format(self.count,self.result[0],self.result[1],self.streak))
+
+                #ret is boolean, cv_img is an image object
+                if ret:
+                    if self.trip_start:
+                        self.change_pixmap_signal.emit(cv_img)
+                    else:
+                        self.change_pixmap_signal.emit(self.numpydata)
+                    #cv2.imwrite("test_image.png", cv_img)
+                    if self.image_perm:
+                        self.image_perm = False
+                        cv2.imwrite("test_image.png", cv_img)
+                        print("picture taken")
+                    
+            # shut down capture system
+            cap.release()
 
     def take_image(self):
         self.image_perm = True
-            
+
+    def trip_state(self):
+        print("activated")
+        if self.trip_start:
+            self.trip_start = False
+        else:
+            self.trip_start = True
 
     def stop(self):
         """Sets run flag to False and waits for thread to finish"""
         self._run_flag = False
         self.wait()
+
+    def ymd_hms(self):
+        """ year-month-day hour:minute:second
+
+        :return: returns a string which is derived from datetime. in the format listed in the summary
+        :rtype: str
+        """        
+        ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d_%H-%M-%S')
+        return ts
+
+
 
 
 class App(QWidget):

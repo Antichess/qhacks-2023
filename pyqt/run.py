@@ -17,4 +17,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     mw = final()
     mw.show()
+    mw.setWindowTitle("GuardDrive")
     sys.exit(app.exec_())

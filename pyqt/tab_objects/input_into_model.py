@@ -14,8 +14,6 @@ import matplotlib.pyplot as plt
 class model_output:
     def __init__(self):
         self.img_height, self.img_width = 480, 640
-        """ class_names = ['Safe_driver', 'Texting_right', 'Calling_right', 'Texting_left', 'Calling_left',
-                    'Infotainment', 'Drinking', 'Reaching', 'Scratching', 'Head_turned'] """
 
         self.class_names = ['Calling_left', 'Calling_right', 'Drinking', 'Head_turned', 'Infotainment',
                     'Reaching', 'Safe_driver', 'Scratching', 'Texting_left', 'Texting_right']
